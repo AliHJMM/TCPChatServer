@@ -91,3 +91,16 @@ func (s *Server) ReadLoop(conn net.Conn) {
 	}
 }
 
+func (s *Server) BroadcastMessages() {
+	for message := range s.msgch {
+		s.mu.Lock()
+		s.history = append(s.history, message)
+		for client := range s.clients {
+			_, err := client.Write([]byte(fmt.Sprintf("[%s][%s]: %s\n", message.time.Format("2006-01-02 15:04:05"), message.sender, message.msg)))
+			if err != nil {
+				fmt.Println("Error sending message to client: ", err)
+			}
+		}
+		s.mu.Unlock()
+	}
+}
