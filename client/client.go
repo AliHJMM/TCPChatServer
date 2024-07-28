@@ -7,6 +7,15 @@ import (
 	"os"
 )
 
+func sendMessage(writer *bufio.Writer, message string) {
+	_, err := writer.WriteString(message)
+	if err != nil {
+		fmt.Println("Error sending message:", err.Error())
+		os.Exit(1)
+	}
+	writer.Flush()
+}
+
 func readServerMessages(reader *bufio.Reader) {
 	for {
 		message, err := reader.ReadString('\n')
