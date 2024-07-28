@@ -7,6 +7,11 @@ import (
 	"os"
 )
 
+func readMessage(reader *bufio.Reader) string {
+	message, _ := reader.ReadString('\n')
+	return message
+}
+
 func sendMessage(writer *bufio.Writer, message string) {
 	_, err := writer.WriteString(message)
 	if err != nil {
