@@ -27,3 +27,67 @@ _)      \.___.,|     .'
      '-'       '--'
 `
 
+func (s *Server) ReadLoop(conn net.Conn) {
+	defer s.ClientExit(conn)
+
+	// Send the welcome message
+	conn.Write([]byte(welcome))
+
+	buffer := make([]byte, 1024)
+	name := make([]byte, 20000)
+	var trimmedName string
+	nameMessage := "Enter Your Name: "
+	for {
+		conn.Write([]byte(nameMessage))
+		n1, err := conn.Read(name)
+		if err != nil {
+			fmt.Print("Error in read: ", err)
+			return
+		}
+		trimmedName = strings.TrimSpace(string(name[:n1]))
+		val, _ := s.NameValidation(trimmedName)
+		if val {
+			break
+		}
+		_, nameMessage = s.NameValidation(trimmedName)
+	}
+
+	s.mu.Lock()
+	s.clients[conn] = trimmedName
+	s.mu.Unlock()
+
+	// Send a personalized welcome message to the user
+	conn.Write([]byte(fmt.Sprintf("Welcome, %s! You have joined the chat.\n", trimmedName)))
+
+	// Announce to everyone that a new user has joined
+	s.msgch <- Message{msg: fmt.Sprintf("%s has joined our chat...", trimmedName), sender: "System", time: time.Now()}
+
+	// Send the chat history to the new user
+	s.mu.Lock()
+	for _, msg := range s.history {
+		conn.Write([]byte(fmt.Sprintf("[%s][%s]: %s\n", msg.time.Format("2006-01-02 15:04:05"), msg.sender, msg.msg)))
+	}
+	s.mu.Unlock()
+
+	for {
+		n2, err := conn.Read(buffer)
+		if err != nil {
+			fmt.Print(err)
+			break
+		}
+		messageContent := strings.TrimSpace(string(buffer[:n2]))
+		if messageContent == "" {
+			continue // Skip empty messages
+		}
+		message := Message{
+			sender: trimmedName,
+			msg:    messageContent,
+			time:   time.Now(),
+		}
+		s.msgch <- message
+
+		// Clear buffer for next read
+		buffer = make([]byte, 1024)
+	}
+}
+
