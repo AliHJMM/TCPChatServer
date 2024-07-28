@@ -52,6 +52,7 @@ func (s *Server) ReadLoop(conn net.Conn) {
 		_, nameMessage = s.NameValidation(trimmedName)
 	}
 
+	// Register the client's name
 	s.mu.Lock()
 	s.clients[conn] = trimmedName
 	s.mu.Unlock()
@@ -69,6 +70,7 @@ func (s *Server) ReadLoop(conn net.Conn) {
 	}
 	s.mu.Unlock()
 
+	// Read and broadcast user messages
 	for {
 		n2, err := conn.Read(buffer)
 		if err != nil {
@@ -94,6 +96,7 @@ func (s *Server) ReadLoop(conn net.Conn) {
 func (s *Server) BroadcastMessages() {
 	for message := range s.msgch {
 		s.mu.Lock()
+		// Append the new message to the chat history
 		s.history = append(s.history, message)
 		for client := range s.clients {
 			_, err := client.Write([]byte(fmt.Sprintf("[%s][%s]: %s\n", message.time.Format("2006-01-02 15:04:05"), message.sender, message.msg)))
