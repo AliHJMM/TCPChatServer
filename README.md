@@ -1,5 +1,9 @@
 # NETCAT
 
+# 💻 Tech Stack:
+![Go](https://img.shields.io/badge/go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)
+
+
 ## DESCRIPTION
 TCPChatServer in Go is a command-line application that replicates the functionality of NetCat (nc) for creating a server-client group chat. The server can handle multiple clients simultaneously, allowing them to communicate in real-time. Each client must provide a name to join the chat, and messages are timestamped and identified by the sender's name.
 
