@@ -8,7 +8,7 @@
 TCPChatServer in Go is a command-line application that replicates the functionality of NetCat (nc) for creating a server-client group chat. The server can handle multiple clients simultaneously, allowing them to communicate in real-time. Each client must provide a name to join the chat, and messages are timestamped and identified by the sender's name.
 
 ### AUTHORS
-- [Ali Hasan Jasim](https://github.com/AliHJMM)
+- [Ali Hasan](https://github.com/AliHJMM)
 - [Habib Mansoor](https://github.com/7abib04)
 - [Husain Ali](https://github.com/hujaafar)
 
