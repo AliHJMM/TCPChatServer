@@ -16,9 +16,9 @@ TCPChatServer in Go is a command-line application that replicates the functional
 ## Usage
 
 ### How to Run
-1. git clone <repository-url> or download zip file.
-2. go run <ip/localhost> <port> 
-3. nc <ip> <port> from another terminal "client"
+1. git clone repo-url or download zip file.
+2. go run ip/localhost port 
+3. nc ip port from another terminal "client"
 4. Test the TCP Chat Application
 
 
